@@ -1,0 +1,106 @@
+1)	gather_all_information_for_all_graphs() ---
+		1.1)	take input of number of graphs & assign names for each as G1, G2, G3 ... Gn
+		1.2)	take input of number of qbit names and target qbit name for every graph
+		1.3)	calculate and initialise ancilla bits for every graph.
+		1.4)	instantiate all edges per graph with weights from generalised connectivity.
+		1.5)	get all assigned vertices for every graph.
+		1.6)	initialise positions for every vertex and individual colors to show in picture.
+		1.7) 	return graphs, edges, vertices, positions, node_color_maps
+		
+2)	draw_graphs(graphs, edges, vertices, positions, node_color_maps) ---
+		picturise all graphs at a time with given informations
+
+3)	merge_all_graphs(graphs, edges, vertices, positions, node_color_maps) ---
+		3.1)	find index of the graph which has maximum number of edges [largest graph]
+		3.2)	take a variable m_vertices & store all vertices of largest graph
+		3.3)	take a variable previous & store all edges of largest graph
+		3.4)	take a variable color_map & store colors of vertices of largest graph
+		3.5) 	initialise a variable new
+		3.6)	[start for]
+					for g in range(0, len(graphs)):
+						if g not wqual to index of largest graph, then:
+							[start for]
+								for edge in edges[g]:
+									if edge not in previous and new list of edges, then:
+										1)	append edge in new
+										2)	check which vertex is not in m_vertices list, if any one not, then append it.
+									[end if]
+							[End for]
+						[end if]
+				[End for]
+		3.7)	sum up all edges for merged graph from previous & new and, store it in a variable m_edges
+		3.7)	return previous, new, m_vertices, m_edges, color_map
+
+4)	draw_merged_graph(previous, new, m_vertices, node_color_map) ---
+		4.1)	 set color_map for edges and store in a variable edge_color_map
+					for edges in new list set 'RED' and rest of all leave DEFAULT
+		4.2)	draw the merged graph with shell layout
+		
+5) 	figure_up_hexagonal_architecture() ---
+		5.1)	take input of number of rows & number of hexagons in each row
+		5.2)	calculate vertices, positions and edges for all individual hexagons
+		5.3) 	return vertices, positions, edges
+	
+6)	draw_hexagonal_architecture(vertices, positions, edges)
+
+				
+				[<==== Mapping Starts ====>]
+7)	take input of interests, manual mapping or automated one (y/n).
+		7.1)	if yes, then:
+					7.1.1)	map_the_merged_graph_in_architecture_manually(h_vertices, h_edges, m_vertices, m_edges) ---
+								7.1.1.1)	take input of corresponding nodes in architecture according to merged graph's vertices, m_vertices and store it in a variable equivalence
+								7.1.1.2)	figure up adjacency list for every vertex in hexagonal architecture
+								7.1.1.3)	connect all vertices of architecture according to merged graph
+								7.1.1.4)	sort out which edges are violating connectivity of physical architecture & which are not
+								7.1.1.5)	get all shortest paths for violated edges and number of swaps according to that shortest path, Here BFS is used for getting Shortest Path between two node
+												number of swaps = 2 x (length of shortest path - 1)
+								7.1.1.6)	gather all edges of architecture related to merged graph
+								7.1.1.7)	change the color of nodes where vertices of merged graph are placed and store in a variable node_color_maps
+								7.1.1.8)	calculate total, initial and additional costs for this plotting.
+								7.1.1.9)	calculate total number of swaps for this plotting.
+								7.1.1.10)	print informations of 7.1.8 and 7.1.9
+								7.1.1.11)	return h_weighted_edges, node_color_map, edge_color_map
+					7.1.2)	draw_hexagonal_architecture_with_mapping(h_vertices, h_positions, h_weighted_edges, edge_color_map, node_color_map)
+				[end if]
+		
+		7.2)	if no, then:
+					7.2.1)	take input of how many time you wants to perform mapping in architecture and store it in a variable max_loop
+					7.2.2)	perform_mapping_automatically(h_vertices, h_edges, m_vertices, m_edges, max_loop) ---
+								7.2.2.1)	randomly select a unique vertex from physical hexagonal architecture for each vertex in merged graph and store the combinations in  (H1, Q1) format to a variable equivalence
+												(H1, Q1) means, Qbit Q1 is mapped to the H1 vertex of architecture.
+								7.2.2.2)	check if equivalence is previously taken or not.
+											if taken, then:
+												7.2.2.2.1)	perform (7.2.2.1)
+											else:
+												7.2.2.2.2)	map_the_merged_graph_into_architecture_automatically(h_vertices, h_edges, m_vertices, m_edges, equivalence, graph_nodes) ---
+																7.2.2.2.2.1)	perform (7.1.1.2) to (7.1.1.11)
+											[end if]
+					7.2.3)	print there are 'n' number of plotting with minimum swaps 'm'
+					7.2.4)	take input do you want to visualize max_loop number of graphs periodically (y/n)
+							7.2.4.1)	if yes, then:
+											7.2.4.1.1)	for i in range(0, max_loop):
+															print the number of swaps for this plotting.
+															print the total cost for this graph.
+															print the initial cost for this graph.
+															print the additional cost for this graph.
+															draw_hexagonal_architecture_with_mapping_for_automated_one(h_vertices, h_positions, h_weighted_edges, edge_color_map, node_color_map, equivalence_mapping)
+														[end for]
+							7.2.4.2)	if no, then:
+											7.2.4.2.1)	take input of do you want to see all graphs with lowest swaps periodically (y/n)
+															7.2.4.2.1.1)	if yes, then:
+																				for loop of graphs with minimum swaps:
+																					print the number of swaps for this plotting.
+																					print the total cost for this graph.
+																					print the initial cost for this graph.
+																					print the additional cost for this graph.
+																					draw_hexagonal_architecture_with_mapping_for_automated_one(h_vertices, h_positions, h_weighted_edges, edge_color_map, node_color_map, equivalence_mapping)
+																				[end for]
+															7.2.4.2.1.2)	if no, then:
+																				take input of enter which number of plotting you want to see and store the index in a variable index.
+																				print the number of swaps for this plotting.
+																				print the total cost for this graph.
+																				print the initial cost for this graph.
+																				print the additional cost for this graph.
+																				draw_hexagonal_architecture_with_mapping_for_automated_one(h_vertices, h_positions, h_weighted_edges, edge_color_map, node_color_map, equivalence_mapping)
+
+8)	Exit
